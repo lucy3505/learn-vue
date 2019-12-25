@@ -1,64 +1,51 @@
 <template>
-    <div class="todo-container">
-      <Header/>
-      <List/>
-      <Footer/>
-    </div>
+  <div class="todo-container">
+    <Header :addTodo="addTodo" />
+    <List :todos="todos" :deleteTodo="deleteTodo" :updateTodo="updateTodo" />
+    <Footer />
+  </div>
 </template>
 
 <script>
-import Header from './components/Header.vue'
-import List from './components/List.vue'
-import Footer from './components/Footer.vue'
-  export default {
-    components:{Header,List,Footer},
-    data() {
-        return {
+import "./base.css";
+import Header from "./components/Header.vue";
+import List from "./components/List.vue";
+import Footer from "./components/Footer.vue";
+export default {
+  components: { Header, List, Footer },
+  data() {
+    return {
+      todos: [
+        //?这个数组里有3条和有一万条数据，传输有差别吗？没有，传的是数组地址
+        //对象的传递永远不可能传对象本身，传的是地址值
 
-        };
+        { id: 1, title: "AAA", complete: false },
+        { id: 2, title: "BBB", complete: true },
+        { id: 3, title: "CCC", complete: false },
+        { id: 4, title: "DDD", complete: false }
+      ]
+    };
+  },
+  methods: {
+    addTodo(todo) {
+      //现在传给header的是函数属性，是函数对象的地址值
+      //?addTodo是谁的属性变量？
+      //*app组件对象的，定义是定义在methods，但他会自动添加到this,就是组件对象
+      //*模版template永远操作的是组件对象也就是vm上面的属性（属性可能是一般值也可能是函数值）
+      this.todos.unshift(todo);
+      //``react中：this.setState(state=>({todos:[todo,...state.todos]}))
     },
- };
+
+    deleteTodo(index) {
+      this.todos.splice(index, 1);
+    },
+    updateTodo(todo, complete) {
+      todo.complete = complete;
+    }
+  }
+};
 </script>
 
 <style scoped >
-.btn {
-  display: inline-block;
-  padding: 4px 12px;
-  margin-bottom: 0;
-  font-size: 14px;
-  line-height: 20px;
-  text-align: center;
-  vertical-align: middle;
-  cursor: pointer;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
-}
-
-.btn-danger {
-  color: #fff;
-  background-color: #da4f49;
-  border: 1px solid #bd362f;
-}
-
-.btn-danger:hover {
-  color: #fff;
-  background-color: #bd362f;
-}
-
-.btn:focus {
-  outline: none;
-}
-
-
-/*app*/
-.todo-container {
-  width: 600px;
-  margin: 0 auto;
-}
-.todo-container .todo-wrap {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
 </style>
 

@@ -1,20 +1,27 @@
 <template>
-    <ul class="todo-main">
-       
-        <Item/>
-      </ul>
+  <ul class="todo-main">
+    <Item
+      v-for="(todo,index) in todos"
+      :key="todo.id"
+      :todo="todo"
+      :index="index"
+      :deleteTodo="deleteTodo"
+      :updateTodo="updateTodo"
+    />
+  </ul>
 </template>
 
 <script>
-import Item from './Item.vue'
-  export default {
-    components:{Item},
-    data() {
-        return {
-
-        };
-    },
- };
+import Item from "./Item.vue";
+export default {
+  components: { Item },
+  //声明接收标签属性，类似react的prototype
+  //接受到的所有标签属性数据都会成功当成组件对象的属性，不声明拿不到。react是都放在props属性上
+  props: ["todos", "deleteTodo", "updateTodo"],
+  data() {
+    return {};
+  }
+};
 </script>
 
 <style scoped >
