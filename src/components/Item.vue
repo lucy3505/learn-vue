@@ -47,6 +47,8 @@ export default {
     updateTodo: Function
   },
   data() {
+    //打印了好几次，说明创建了好几次，但每个this都不一样，但是类型都是VueComponent
+    console.log("Item data()", this);
     //鼠标移入，背景和按钮有变化。此时就要设计2个数据
     return {
       bgColor: "white",

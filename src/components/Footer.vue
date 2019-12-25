@@ -1,23 +1,48 @@
 <template>
-     <div class="todo-footer">
-        <label>
-          <input type="checkbox"/>
-        </label>
-        <span>
-          <span>已完成0</span> / 全部2
-        </span>
-        <button class="btn btn-danger">清除已完成任务</button>
-      </div>
+  <div class="todo-footer">
+    <label>
+      <!-- 这input要监视数据改变 -->
+      <input type="checkbox" v-model="checkAll" />
+    </label>
+    <span>
+      <!-- //*统计用reduce -->
+      <span>已完成{{completedCount}}</span>
+      / 全部{{todos.length}}
+    </span>
+    <button class="btn btn-danger" v-if="completedCount>0" @click="deleteCompleted">清除已完成任务</button>
+  </div>
 </template>
 
 <script>
-  export default {
-    data() {
-        return {
-
-        };
+export default {
+  props: {
+    todos: Array,
+    selectAll: Function,
+    deleteCompleted: Function
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    completedCount() {
+      return this.todos.reduce((pre, todo) => pre + (todo.complete ? 1 : 0), 0);
     },
- };
+    checkAll: {
+      get() {
+        return this.completedCount === this.todos.length &&
+          this.completedCount > 0
+          ? true
+          : false;
+      },
+      set(value) {
+        //用户点击checkbox时调用
+        this.selectAll(value);
+
+        // this.completedCount = 0;
+      }
+    }
+  }
+};
 </script>
 
 <style scoped >
@@ -45,6 +70,5 @@
   float: right;
   margin-top: 5px;
 }
-
 </style>
 

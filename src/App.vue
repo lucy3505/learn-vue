@@ -2,7 +2,7 @@
   <div class="todo-container">
     <Header :addTodo="addTodo" />
     <List :todos="todos" :deleteTodo="deleteTodo" :updateTodo="updateTodo" />
-    <Footer />
+    <Footer :todos="todos" :selectAll="selectAll" :deleteCompleted="deleteCompleted" />
   </div>
 </template>
 
@@ -15,15 +15,17 @@ export default {
   components: { Header, List, Footer },
   data() {
     return {
-      todos: [
-        //?这个数组里有3条和有一万条数据，传输有差别吗？没有，传的是数组地址
-        //对象的传递永远不可能传对象本身，传的是地址值
+      // todos: [
+      //   //?这个数组里有3条和有一万条数据，传输有差别吗？没有，传的是数组地址
+      //   //对象的传递永远不可能传对象本身，传的是地址值
 
-        { id: 1, title: "AAA", complete: false },
-        { id: 2, title: "BBB", complete: true },
-        { id: 3, title: "CCC", complete: false },
-        { id: 4, title: "DDD", complete: false }
-      ]
+      //   { id: 1, title: "AAA", complete: false },
+      //   { id: 2, title: "BBB", complete: true },
+      //   { id: 3, title: "CCC", complete: false },
+      //   { id: 4, title: "DDD", complete: false }
+      // ]
+      // localStorage.getItem('todos_key')如果没值返回的是null
+      todos: JSON.parse(localStorage.getItem("todos_key") || "[]")
     };
   },
   methods: {
@@ -41,6 +43,26 @@ export default {
     },
     updateTodo(todo, complete) {
       todo.complete = complete;
+    },
+    /* 
+    全选/全不选
+    */
+    selectAll(isCheck) {
+      this.todos.forEach(todo => (todo.complete = isCheck));
+    },
+    //删除已完成的
+    deleteCompleted() {
+      this.todos = this.todos.filter(todo => !todo.complete);
+    }
+  },
+  watch: {
+    todos: {
+      deep: true, //深度监视：内部发生任何变化都会回调
+      handler: function(value) {
+        //todos发生了变化
+        //保存todos
+        localStorage.setItem("todos_key", JSON.stringify(value));
+      }
     }
   }
 };
