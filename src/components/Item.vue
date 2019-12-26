@@ -1,20 +1,49 @@
 <template>
-    <li>
+    <li @mouseover="handleMouseIn(true)" @mouseout="handleMouseIn(false)" :style="{background:bgColor}">
       <label>
-        <input type="checkbox"/>
-        <span>xxxxx</span>
+        <input type="checkbox" v-model="isComplete"/>
+        <span>{{todo.title}}</span>
       </label>
-      <button class="btn btn-danger" style="display:none">删除</button>
+      <button class="btn btn-danger" v-show="isShow" @click="deleteTodo(index)">删除</button>
     </li>
 </template>
 
 <script>
   export default {
+    props:{
+      todo:Object,
+      index:Number,
+      deleteTodo:Function,
+      updateComplete:Function
+    },
     data() {
         return {
-
+          isShow:false,
+          bgColor:'white'
         };
     },
+    computed:{
+      isComplete:{
+        get() {
+          return this.todo.complete
+        },
+        set(isCheck) {
+          this.updateComplete(this.todo,isCheck)
+        }
+      }
+    },
+    methods:{
+      handleMouseIn(isIn){
+        if(isIn){
+          this.bgColor="#ccc"
+          this.isShow=true
+        }else{
+          this.bgColor="white"
+          this.isShow=false
+        }
+      },
+
+    }
  };
 </script>
 
@@ -41,7 +70,6 @@ li label li input {
 
 li button {
   float: right;
-  display: none;
   margin-top: 3px;
 }
 

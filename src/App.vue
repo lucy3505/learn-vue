@@ -1,8 +1,8 @@
 <template>
     <div class="todo-container">
-      <Header/>
-      <List/>
-      <Footer/>
+      <Header :addTodo="addTodo"/>
+      <List :todos="todos" :deleteTodo="deleteTodo" :updateComplete="updateComplete" />
+      <Footer :todos="todos" :handleAllComplete="handleAllComplete" :clearAllComplete="clearAllComplete"/>
     </div>
 </template>
 
@@ -22,7 +22,7 @@ import './base.css'
           },
           {
             title:'BBB',
-            complete:false,
+            complete:true,
             id:2
           },
           {
@@ -37,6 +37,30 @@ import './base.css'
           },]
         };
     },
+    methods:{
+      addTodo(value){
+        this.todos.unshift(value)
+      },
+      deleteTodo(index){
+        this.todos.splice(index,1)
+      },
+      updateComplete(todo,isComplete){
+        this.todos.forEach(item=>{
+          if(item.id===todo.id){
+            item.complete = isComplete
+          }
+        })
+      },
+      handleAllComplete(isCheck){
+        // debugger
+        this.todos.forEach((item)=>item.complete=isCheck)
+      },
+      clearAllComplete(){
+        this.todos = this.todos.filter((item)=>
+          !item.complete
+        )
+      }
+    }
  };
 </script>
 
