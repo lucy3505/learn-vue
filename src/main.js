@@ -5,6 +5,7 @@ import router from "./router";
 Vue.config.productionTip = false;
 
 Vue.prototype.m = 1
+Vue.prototype.$globalEventBus = new Vue()
 
 /* eslint-disable no-new */
 new Vue({

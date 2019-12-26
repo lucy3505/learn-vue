@@ -68,7 +68,9 @@ export default {
     },
     deleteItem() {
       if (confirm("确定删除吗")) {
-        this.deleteTodo(this.index);
+        // this.deleteTodo(this.index);
+        //通过全局事件总线对象分发自定义事件
+        this.$globalEventBus.$emit("deleteTodo", this.index);
       }
     }
   },

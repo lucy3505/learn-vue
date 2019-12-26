@@ -1,7 +1,8 @@
 <template>
   <div class="todo-container">
-    <Header :addTodo="addTodo" />
-    <List :todos="todos" :deleteTodo="deleteTodo" :updateTodo="updateTodo" />
+    <!-- <Header :addTodo="addTodo" /> -->
+    <Header @addTodo="addTodo" />
+    <List :todos="todos" :updateTodo="updateTodo" />
     <Footer :todos="todos" :selectAll="selectAll" :deleteCompleted="deleteCompleted" />
   </div>
 </template>
@@ -27,6 +28,16 @@ export default {
       // localStorage.getItem('todos_key')如果没值返回的是null
       todos: JSON.parse(localStorage.getItem("todos_key") || "[]")
     };
+  },
+  mounted() {
+    this.$refs.header.$on("addTodo", this.addTodo);
+    //通过事件总线来绑定自定义事件监听
+    this.$globalEventBus.$on("deleteTodo", this.deleteTodo);
+  },
+  beforeDestroy() {
+    //$off解绑某个监听
+    this.$refs.header.$off("addTodo");
+    this.$globalEventBus.$off("deleteTodo");
   },
   methods: {
     addTodo(todo) {
