@@ -6,13 +6,7 @@
 
 <script>
 export default {
-  props: {
-    //属性名 /属性值的类型 /属性的必要性
-    addTodo: {
-      type: Function,
-      required: true
-    }
-  },
+  props: {},
   data() {
     return {
       title: ""
@@ -32,10 +26,12 @@ export default {
         complete: false,
         title
       };
+      //向App的todos添加一个todo
+      //分发自定义事件：addTodo
+      this.$emit("addTodo", todo);
 
       // this.$emit("addTodo", todo);
-      //向APP的todos添加一个todo,不要在自组件更新父组件的数据
-      this.addTodo(todo);
+
       //清除输入
       this.title = "";
     }

@@ -16,16 +16,6 @@ export default {
   components: { Header, List, Footer },
   data() {
     return {
-      // todos: [
-      //   //?这个数组里有3条和有一万条数据，传输有差别吗？没有，传的是数组地址
-      //   //对象的传递永远不可能传对象本身，传的是地址值
-
-      //   { id: 1, title: "AAA", complete: false },
-      //   { id: 2, title: "BBB", complete: true },
-      //   { id: 3, title: "CCC", complete: false },
-      //   { id: 4, title: "DDD", complete: false }
-      // ]
-      // localStorage.getItem('todos_key')如果没值返回的是null
       todos: JSON.parse(localStorage.getItem("todos_key") || "[]")
     };
   },
