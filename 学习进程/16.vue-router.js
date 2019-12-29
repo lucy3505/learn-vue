@@ -56,6 +56,9 @@
         ?路由器对象怎么产生
         new VueRouter()
 
-
+    ?如果不想路径是#home，不想带#
+    路由器可以配置mode:history
+    默认是hash
+    ``有的人会把路由配置上的路由单独放成一个模块，router/routes.js
 
 */
