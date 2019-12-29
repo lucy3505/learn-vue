@@ -4,7 +4,21 @@
     <!-- <Header @addTodo="addTodo" /> -->
     <Header ref="header" />
     <List :todos="todos" />
-    <Footer :todos="todos" :selectAll="selectAll" :deleteCompleted="deleteCompleted" />
+    <!-- <Footer :todos="todos" :selectAll="selectAll" :deleteCompleted="deleteCompleted" />
+    -->
+    <Footer>
+      <span slot="middle">
+        <span>已完成{{completedCount}}</span>
+        / 全部{{todos.length}}
+      </span>
+      <input type="checkbox" v-model="checkAll" slot="left" />
+      <button
+        class="btn btn-danger"
+        v-if="completedCount>0"
+        @click="deleteCompleted"
+        slot="right"
+      >清除已完成任务</button>
+    </Footer>
   </div>
 </template>
 
@@ -67,7 +81,25 @@ export default {
       this.todos = this.todos.filter(todo => !todo.complete);
     }
   },
+  computed: {
+    completedCount() {
+      return this.todos.reduce((pre, todo) => pre + (todo.complete ? 1 : 0), 0);
+    },
+    checkAll: {
+      get() {
+        return this.completedCount === this.todos.length &&
+          this.completedCount > 0
+          ? true
+          : false;
+      },
+      set(value) {
+        //用户点击checkbox时调用
+        this.selectAll(value);
 
+        // this.completedCount = 0;
+      }
+    }
+  },
   watch: {
     todos: {
       deep: true, //深度监视：内部发生任何变化都会回调
