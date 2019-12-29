@@ -1,114 +1,54 @@
 <template>
-  <div class="todo-container">
-    <!-- <Header :addTodo="addTodo" /> -->
-    <!-- <Header @addTodo="addTodo" /> -->
-    <Header ref="header" />
-    <List :todos="todos" />
-    <!-- <Footer :todos="todos" :selectAll="selectAll" :deleteCompleted="deleteCompleted" />
-    -->
-    <Footer>
-      <span slot="middle">
-        <span>已完成{{completedCount}}</span>
-        / 全部{{todos.length}}
-      </span>
-      <input type="checkbox" v-model="checkAll" slot="left" />
-      <button
-        class="btn btn-danger"
-        v-if="completedCount>0"
-        @click="deleteCompleted"
-        slot="right"
-      >清除已完成任务</button>
-    </Footer>
+  <div>
+    <div v-if="!repoName">loading。。。</div>
+    <div v-else>
+      most star repo is
+      <a :ref="repoUrl">{{repoName}}</a>
+    </div>
   </div>
 </template>
 
 <script>
-import "./base.css";
-import Header from "./components/Header.vue";
-import List from "./components/List.vue";
-import Footer from "./components/Footer.vue";
-import PubSub from "pubsub-js";
+import axios from "axios";
 export default {
-  components: { Header, List, Footer },
   data() {
     return {
-      todos: JSON.parse(localStorage.getItem("todos_key") || "[]")
+      repoName: "",
+      repoUrl: ""
     };
   },
   mounted() {
-    //this.$on这样是给App这个实例绑定监听，而不是给header绑定监听
-    this.$refs.header.$on("addTodo", this.addTodo); //this.addTodo不要加（），因为你是指定操作，不是调用操作
-    //这个方式没有直接在<Header @addTodo=addTodo />简单，但也是可以
+    //发请求
+    //``使用vue-resource发请求
 
-    //通过事件总线来绑定自定义事件监听
-
-    this.$globalEventBus.$on("deleteTodo", this.deleteTodo);
-    //订阅消息
-    this.token = PubSub.subscribe("updateTodo", (msg, { todo, complete }) => {
-      this.updateTodo(todo, complete);
-    });
-  },
-  beforeDestroy() {
-    //$off解绑某个监听
-    this.$refs.header.$off("addTodo"); //一个参数不传，就全部解绑
-    this.$globalEventBus.$off("deleteTodo");
-    PubSub.unsubscribe(this.token);
-  },
-  methods: {
-    addTodo(todo) {
-      //现在传给header的是函数属性，是函数对象的地址值
-      //?addTodo是谁的属性变量？
-      //*app组件对象的，定义是定义在methods，但他会自动添加到this,就是组件对象
-      //*模版template永远操作的是组件对象也就是vm上面的属性（属性可能是一般值也可能是函数值）
-      this.todos.unshift(todo);
-      //``react中：this.setState(state=>({todos:[todo,...state.todos]}))
-    },
-
-    deleteTodo(index) {
-      this.todos.splice(index, 1);
-    },
-    updateTodo(todo, complete) {
-      todo.complete = complete;
-    },
-    /* 
-    全选/全不选
-    */
-    selectAll(isCheck) {
-      this.todos.forEach(todo => (todo.complete = isCheck));
-    },
-    //删除已完成的
-    deleteCompleted() {
-      this.todos = this.todos.filter(todo => !todo.complete);
-    }
-  },
-  computed: {
-    completedCount() {
-      return this.todos.reduce((pre, todo) => pre + (todo.complete ? 1 : 0), 0);
-    },
-    checkAll: {
-      get() {
-        return this.completedCount === this.todos.length &&
-          this.completedCount > 0
-          ? true
-          : false;
-      },
-      set(value) {
-        //用户点击checkbox时调用
-        this.selectAll(value);
-
-        // this.completedCount = 0;
-      }
-    }
-  },
-  watch: {
-    todos: {
-      deep: true, //深度监视：内部发生任何变化都会回调
-      handler: function(value) {
-        //todos发生了变化
-        //保存todos
-        localStorage.setItem("todos_key", JSON.stringify(value));
-      }
-    }
+    const url = "https://api.github.com/search/repositories?q=v&sort=stars";
+    // this.$http
+    //   .get(url)
+    //   .then(res => {
+    //     const result = res.data;
+    //     const { name, html_url } = result.items[0];
+    //     //更新数据
+    //     this.repoName = name; //this要取对必须要箭头函数
+    //     this.repoUrl = html_url;
+    //   })
+    //   .catch(err => {
+    //     debugger;
+    //     alert("请求出错" + err.statusText);
+    //   });
+    //``使用axios发请求不需要vue.use，因为不是vue的插件，引入就可以
+    axios
+      .get(url)
+      .then(res => {
+        const result = res.data;
+        const { name, html_url } = result.items[0];
+        //更新数据
+        this.repoName = name; //this要取对必须要箭头函数
+        this.repoUrl = html_url;
+      })
+      .catch(err => {
+        debugger;
+        alert("请求出错" + err.message);
+      });
   }
 };
 </script>
