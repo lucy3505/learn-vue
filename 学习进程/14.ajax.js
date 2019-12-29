@@ -12,4 +12,11 @@
         //error callback
         console.log(res.statusText)//错误信息
     })
-*/
+
+
+    ``案例：搜索用户
+    上下结构：
+            上面：搜索用户
+            下面：展示用户：4个界面：未展示，loading,展示用户，请求失败
+
+            */
