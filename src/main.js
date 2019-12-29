@@ -5,7 +5,10 @@ import router from "./router";
 Vue.config.productionTip = false;
 
 Vue.prototype.m = 1
-Vue.prototype.$globalEventBus = new Vue()
+
+//创建一个vm对象作为全局事件总线对象，并挂在到Vue原型对象上
+//所有的组件对象都可以看到它，可以通过他来实现事件机制通信
+Vue.prototype.$globalEventBus = new Vue()//最好加$
 
 /* eslint-disable no-new */
 new Vue({

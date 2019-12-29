@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import PubSub from "pubsub-js"; //可以挂到全局对象上，一样的
+
 /* 
 
   模版里读取数据的来源：
@@ -42,9 +44,7 @@ export default {
   props: {
     //属性名/属性值的类型
     todo: Object, //函数是Function,数组是Array,
-    deleteTodo: Function,
-    index: Number,
-    updateTodo: Function
+    index: Number
   },
   data() {
     //打印了好几次，说明创建了好几次，但每个this都不一样，但是类型都是VueComponent
@@ -82,7 +82,9 @@ export default {
       },
       set(value) {
         //当用户操作checkbox界面时调用
-        this.updateTodo(this.todo, value);
+        //this.updateTodo(this.todo, value);
+        //分发消息
+        PubSub.publish("updateTodo", { todo: this.todo, complete: value });
       }
     }
   }

@@ -28,7 +28,7 @@ export default {
       };
       //向App的todos添加一个todo
       //分发自定义事件：addTodo
-      this.$emit("addTodo", todo);
+      this.$emit("addTodo", todo); //只是可以取代函数类型的props，子向父传递，局限还是很大
 
       // this.$emit("addTodo", todo);
 
