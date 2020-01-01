@@ -26,7 +26,13 @@
         <div class="panel">
           <div class="panel-body">
             <!--标识在此显示当前路由组件界面 说白了，他最后至少会在此插入About或Home标签:<About/><Home/> 我们没有亲自在这插入About或Home标签，路由组件我们从来不亲自写标签，但他最后是会产生标签的，不用我们亲自去做-->
-            <router-view></router-view>
+            <!-- app下的两个子路由组件Home和About 都会收到Msg这个属性 -->
+            <!-- //*缓存得是HOME组件和About组件，不是缓存router-view 
+                说明About切换到home不死，home切换到about组件也不死
+            -->
+            <keep-alive>
+              <router-view msg="hahahha"></router-view>
+            </keep-alive>
           </div>
         </div>
       </div>
@@ -48,6 +54,4 @@ export default {
 };
 </script>
 
-<style scoped >
-</style>
-
+<style scoped></style>

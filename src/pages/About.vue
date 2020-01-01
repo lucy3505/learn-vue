@@ -1,6 +1,7 @@
 <template>
   <div>
     <h2>About</h2>
+    <input type="text" />
   </div>
 </template>
 
@@ -12,5 +13,4 @@ export default {
 };
 </script>
 
-<style scoped >
-</style>
+<style scoped></style>
