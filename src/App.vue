@@ -1,57 +1,86 @@
 <template>
-  <div>
-    <div class="row">
-      <div class="col-xs-offset-2 col-xs-8">
-        <div class="page-header">
-          <h2>Router Test</h2>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <!-- 左侧的路由链接 -->
-      <div class="col-xs-2 col-xs-offset-2">
-        <div class="list-group">
-          <!--生成路由链接-->
-          <router-link to="/about" class="list-group-item">About</router-link>
-          <router-link to="/home" class="list-group-item">Home</router-link>
-        </div>
-      </div>
-
-      <!-- 右侧的界面 以前的react就会在这里写<Route/>的配置，哪里要显示路由组件界面，哪里就配置Route  但vue不是这样，vue是统一在一个文件配置router/index.js
-      现在问题：现在组件里面如何告诉他在某个位置去显示当前匹配的路由组件界面呢？
-        很简单：<router-view></router-view>
-      -->
-      <div class="col-xs-6">
-        <div class="panel">
-          <div class="panel-body">
-            <!--标识在此显示当前路由组件界面 说白了，他最后至少会在此插入About或Home标签:<About/><Home/> 我们没有亲自在这插入About或Home标签，路由组件我们从来不亲自写标签，但他最后是会产生标签的，不用我们亲自去做-->
-            <!-- app下的两个子路由组件Home和About 都会收到Msg这个属性 -->
-            <!-- //*缓存得是HOME组件和About组件，不是缓存router-view 
-                说明About切换到home不死，home切换到about组件也不死
-            -->
-            <keep-alive>
-              <router-view msg="hahahha"></router-view>
-            </keep-alive>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="todo-container">
+    <!-- <Header :addTodo="addTodo" /> -->
+    <!-- <Header @addTodo="addTodo" /> -->
+    <Header ref="header" />
+    <List :todos="todos" />
+    <Footer :todos="todos" :selectAll="selectAll" :deleteCompleted="deleteCompleted" />
   </div>
 </template>
 
 <script>
-import { Toast } from "mint-ui";
+import "./base.css";
+import Header from "./components/Header.vue";
+import List from "./components/List.vue";
+import Footer from "./components/Footer.vue";
+import PubSub from "pubsub-js";
 export default {
+  components: { Header, List, Footer },
+  data() {
+    return {
+      todos: JSON.parse(localStorage.getItem("todos_key") || "[]")
+    };
+  },
+  mounted() {
+    //this.$on这样是给App这个实例绑定监听，而不是给header绑定监听
+    this.$refs.header.$on("addTodo", this.addTodo); //this.addTodo不要加（），因为你是指定操作，不是调用操作
+    //这个方式没有直接在<Header @addTodo=addTodo />简单，但也是可以
+
+    //通过事件总线来绑定自定义事件监听
+
+    this.$globalEventBus.on("deleteTodo", this.deleteTodo);
+    //订阅消息
+    this.token = PubSub.subscribe("updateTodo", (msg, { todo, complete }) => {
+      this.updateTodo(todo, complete);
+    });
+  },
+  beforeDestroy() {
+    //$off解绑某个监听
+    this.$refs.header.off("addTodo"); //一个参数不传，就全部解绑
+    this.$globalEventBus.off("deleteTodo");
+    PubSub.unsubscribe(this.token);
+  },
   methods: {
-    hint() {
-      Toast({
-        message: "操作成功",
-        position: "button"
-      });
+    addTodo(todo) {
+      //现在传给header的是函数属性，是函数对象的地址值
+      //?addTodo是谁的属性变量？
+      //*app组件对象的，定义是定义在methods，但他会自动添加到this,就是组件对象
+      //*模版template永远操作的是组件对象也就是vm上面的属性（属性可能是一般值也可能是函数值）
+      this.todos.unshift(todo);
+      //``react中：this.setState(state=>({todos:[todo,...state.todos]}))
+    },
+
+    deleteTodo(index) {
+      this.todos.splice(index, 1);
+    },
+    updateTodo(todo, complete) {
+      todo.complete = complete;
+    },
+    /* 
+    全选/全不选
+    */
+    selectAll(isCheck) {
+      this.todos.forEach(todo => (todo.complete = isCheck));
+    },
+    //删除已完成的
+    deleteCompleted() {
+      this.todos = this.todos.filter(todo => !todo.complete);
+    }
+  },
+
+  watch: {
+    todos: {
+      deep: true, //深度监视：内部发生任何变化都会回调
+      handler: function(value) {
+        //todos发生了变化
+        //保存todos
+        localStorage.setItem("todos_key", JSON.stringify(value));
+      }
     }
   }
 };
 </script>
 
-<style scoped></style>
+<style scoped >
+</style>
+
