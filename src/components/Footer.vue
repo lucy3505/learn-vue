@@ -3,7 +3,7 @@
     <label>
       <!-- 这input要监视数据改变 -->
       <!-- <input type="checkbox" v-model="checkAll" /> -->
-      <slot name="left">
+      <slot name="left"></slot>
     </label>
     <slot name="middle"></slot>
     <!-- <span>
