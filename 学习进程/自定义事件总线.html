@@ -1,0 +1,34 @@
+<!-- /* 
+之前是Vue.prototype.$globalBusEvent=new Vue()
+现在是自己定义一个对象取代new Vue()
+event-bus对象应该具备什么特征
+eventBus.on=function(eventName,listener) {
+    要对回调函数做什么处理？
+    ?等事件发生得时候再执行回调函数，所以内部得干嘛
+    回想promise，开始得时候有初始状态，后面成功了或失败了有个结果状态，我们要给它指定成功或失败得回调来接收响应数据，.then指定成功或失败得回调，那.then内部干什么，对回调函数进行什么处理？
+    存起来，将来得调
+    现在绑定监听得时候根部不可能不调回调函数，只会去存回调函数，只有等到分发事件得时候才调用，我事件都没绑定，你就分发了，是没有用得，只能先绑定监听，所以在On里面要保存listener
+    ?可能On多次，内部要什么结构来缓存监听回调函数？
+    可能给同一个时间名
+}
+
+ */ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+
+
+</script>
+
+</html>
